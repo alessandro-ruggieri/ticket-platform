@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Ticket</title>
+    <div th:replace="~{fragments/head :: head}"></div>
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar('tickets')}"></div>
+
+    <div class="container py-4">
+        <h1>Create New Ticket</h1>
+
+        <form method="post" th:action="@{/tickets/create}">
+            <div class="card my-4">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="title" name="title" required placeholder="Enter ticket title">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required placeholder="Enter ticket description"></textarea>
+                    </div>
+
+					<div class="mb-3">
+		                <label for="status" class="form-label">Status</label>
+		                <select class="form-control" id="status" name="status" required>
+		                    <!-- Cicla sugli stati definiti nell'Enum Ticket.Status -->
+							<option th:each="status : ${T(org.lessons.milestone.model.Ticket.Status).values()}" 
+		                            th:value="${status.name()}" 
+		                            th:text="${status.name()}">
+		                    </option>
+		                </select>
+		            </div>
+					
+					<!-- Dropdown per la categoria -->
+		            <div class="mb-3">
+		                <label for="category" class="form-label">Category</label>
+		                <select class="form-control" id="category" name="category" required>
+		                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
+		                </select>
+		            </div>
+
+                    <div class="mb-3">
+                        <label for="assignedOperator" class="form-label">Assign Operator</label>
+                        <select class="form-control" id="assignedOperator" name="operator">
+                            <option th:each="operator : ${operators}" th:value="${operator.id}" th:text="${operator.name}"></option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Create Ticket</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="mt-4">
+            <a href="/admin/dashboard" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Ticket List
+            </a>
+        </div>
+    </div>
+
+	<div th:replace="fragments/footer :: footer"></div>
+    <div th:replace="~{fragments/scripts :: scripts}"></div>
+</body>
+</html>

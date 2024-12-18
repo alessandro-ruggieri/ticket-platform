@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="~{fragments/head :: head}"></div>
+    <title>Operator Details</title>
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar('operators')}"></div>
+
+    <div class="container py-4">
+        <h1>Operator Details</h1>
+
+        <!-- Dettagli dell'operatore -->
+        <div class="card">
+            <div class="card-header">
+                <h2 th:text="${operator.name}"></h2>
+            </div>
+            <div class="card-body">
+                <p><strong>Role:</strong> <span th:text="${operator.role.name}"></span></p>
+                <p><strong>Status:</strong> <span th:text="${operator.status.name}"></span></p> <!-- Aggiunto il campo Status -->
+
+                <h4>Assigned Tickets</h4>
+                <div th:if="${tickets != null and !tickets.isEmpty()}">
+                    <!-- Griglia di carte per i ticket -->
+                    <div class="row">
+                        <div class="col-md-4 mb-4" th:each="ticket : ${tickets}">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 th:text="${ticket.title}"></h5>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Status:</strong> <span th:text="${ticket.status}"></span></p>
+                                    <form th:action="@{/operator/ticket/{ticketId}/status(ticketId=${ticket.id})}" method="post" class="mt-2">
+                                        <div class="form-group">
+                                            <label for="status">Change Status</label>
+                                            <select name="status" class="form-control" id="status">
+                                                <option th:each="status : ${statusOptions}" 
+                                                        th:value="${status}" 
+                                                        th:text="${status}"></option>
+                                            </select>
+                                        </div>
+                                        <div class="d-flex justify-content-between mt-2">
+                                            <button type="submit" class="btn btn-primary">Update Status</button>
+                                            <a th:href="@{/tickets/{ticketId} (ticketId=${ticket.id})}" class="btn btn-secondary">View Details</a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${tickets == null or tickets.isEmpty()}" class="alert alert-info">
+                    No tickets assigned.
+                </div>
+
+                <!-- Mostra il pulsante solo se tutti i ticket sono COMPLETED -->
+                <div th:if="${tickets != null and !tickets.isEmpty() and allCompleted}" class="alert alert-info">
+                    All tickets completed. You can change your status.
+                    <form th:action="@{${operator.status.name == 'ACTIVE' ? '/operator/set-inactive' : '/operator/set-active'}}" method="post">
+                        <button type="submit" class="btn" th:classappend="${operator.status.name == 'ACTIVE' ? 'btn-warning' : 'btn-success'}">
+                            <span th:text="${operator.status.name == 'ACTIVE' ? 'Set Status to INACTIVE' : 'Set Status to ACTIVE'}"></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+	<div th:replace="fragments/footer :: footer"></div>
+    <div th:replace="~{fragments/scripts :: scripts}"></div>
+</body>
+</html>

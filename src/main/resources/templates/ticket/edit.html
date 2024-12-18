@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Ticket</title>
+    <div th:replace="~{fragments/head :: head}"></div>
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar('tickets')}"></div>
+
+    <div class="container py-4">
+        <h1>Edit Ticket</h1>
+
+		<form method="post" th:action="@{|/tickets/edit/${ticket.id}|}" th:object="${ticket}">
+		    <!-- ID del ticket -->
+		    <input type="hidden" th:field="*{id}" />
+		    
+		    <div class="card my-4">
+		        <div class="card-body">
+		            <!-- Campo per il titolo -->
+		            <div class="mb-3">
+		                <label for="title" class="form-label">Title</label>
+		                <input type="text" class="form-control" id="title" th:field="*{title}" required>
+		            </div>
+
+		            <!-- Campo per la descrizione -->
+		            <div class="mb-3">
+		                <label for="description" class="form-label">Description</label>
+		                <textarea class="form-control" id="description" th:field="*{description}" rows="3" required></textarea>
+		            </div>
+
+		            <!-- Dropdown per lo stato -->
+		            <div class="mb-3">
+		                <label for="status" class="form-label">Status</label>
+		                <select class="form-control" id="status" th:field="*{status}" required>
+		                    <option th:each="status : ${T(org.lessons.milestone.model.Ticket.Status).values()}" 
+		                            th:value="${status.name()}" 
+		                            th:text="${status.name()}">
+		                    </option>
+		                </select>
+		            </div>
+					
+					<!-- Dropdown per la categoria -->
+					<div class="mb-3">
+					    <label for="category" class="form-label">Category</label>
+					    <select class="form-control" id="category" th:field="*{category}" required>
+					        <option value="" th:if="${ticket.category == null}" selected>Select Category</option>
+					        <option th:each="category : ${categories}" 
+					                th:value="${category.id}" 
+					                th:text="${category.name}">
+					        </option>
+					    </select>
+					</div>
+
+		            <!-- Dropdown per l'operatore assegnato -->
+		            <div class="mb-3">
+		                <label for="assignedOperator" class="form-label">Assign Operator</label>
+		                <select class="form-control" id="assignedOperator" th:field="*{operator}">
+		                    <option value="" th:if="${ticket.operator == null}" selected>Unassigned</option>
+		                    <option th:each="operator : ${operators}" 
+		                            th:value="${operator.id}" 
+		                            th:text="${operator.name}">
+		                    </option>
+		                </select>
+		            </div>
+
+		            <!-- Pulsante di submit -->
+		            <button type="submit" class="btn btn-primary">Update Ticket</button>
+		        </div>
+		    </div>
+		</form>
+
+
+        <div class="mt-4">
+            <a href="/admin/dashboard" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Ticket List
+            </a>
+        </div>
+    </div>
+	
+	<div th:replace="fragments/footer :: footer"></div>
+    <div th:replace="~{fragments/scripts :: scripts}"></div>
+</body>
+</html>
